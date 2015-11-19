@@ -172,6 +172,14 @@ Parser.prototype._getDeps = function(filepath, callback) {
     loaders: this.loaders
   }, function(err, deps){
     if(err){return callback(err);}
+
+    var changedFile = self.opt.changedFile;
+    if (changedFile && !(deps && (changedFile in deps))) {
+      err = new Error("Not need build the file");
+      err.code = 'ENOTNEEDBUILD';
+      return callback(err);
+    }
+
     callback(null, deps);
   })
   .on('warn', function (message) {

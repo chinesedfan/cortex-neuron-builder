@@ -21,6 +21,7 @@ builder(options)
   - pkg: mixed package json format of project
   - targetVersion: target version to build
   - cwd: current working directory
+  - changedFile: the file has been changed. If it has no relations with the parsing file, an `ENOTNEEDBUILD` error will be thrown.
   - allowNotInstalled
   
 - file `Path` the parsing file
