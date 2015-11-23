@@ -1,6 +1,6 @@
 {
   "name": "cortex-neuron-builder",
-  "version": "4.0.6",
+  "version": "4.0.8",
   "description": "Wrap commonjs module/1.0 javascript files for [cortex](http://github.com/kaelzhang/cortex)",
   "main": "index.js",
   "scripts": {
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "async": "^0.9.0",
-    "cortex-commonjs-walker": "^5.0.0",
+    "commonjs-walker": "^5.0.2",
     "underscore": "^1.6.0"
   }
 }
