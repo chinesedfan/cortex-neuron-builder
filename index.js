@@ -35,7 +35,6 @@ function Parser (opt) {
   this.asyncDependencies = this.pkg.asyncDependencies || {};
   this.as = this.pkg.as || {};
   this.loaders = opt.loaders;
-  this.loader_version = opt.loader_version;
 
   var asyncDependencies = this.asyncDependencies;
   var as = this.as;
@@ -161,7 +160,7 @@ Parser.prototype._generateCode = function(codes, callback) {
 
 Parser.prototype._getDeps = function(filepath, callback) {
   var self = this;
-  var walker = require('cortex-commonjs-walker');
+  var walker = require('commonjs-walker');
   var pkg = this.pkg;
   walker(filepath, {
     allowCyclic: true,
@@ -170,14 +169,18 @@ Parser.prototype._getDeps = function(filepath, callback) {
     extensions: ['.js', '.json'],
     cwd: self.cwd,
     'as': pkg['as'] || {},
-    loaders: this.loaders,
-    loader_version: this.loader_version
+    loaders: this.loaders
   }, function(err, deps){
     if(err){return callback(err);}
+
+    var changedFile = self.opt.changedFile;
+    if (changedFile && !(deps && (changedFile in deps))) {
+      err = new Error("Not need build the file");
+      err.code = 'ENOTNEEDBUILD';
+      return callback(err);
+    }
+
     callback(null, deps);
-  })
-  .on('dependency', function(mod, parent){
-    self.emit('dependency', mod, parent);
   })
   .on('warn', function (message) {
     self.emit('warn', message);
@@ -218,7 +221,7 @@ Parser.prototype._wrapping = function(id, mod) {
   var result = _.template(template)({
     id: self._toLocals(id),
     deps: this._toLocals(resolvedDeps),
-    code: this._dealCode(id, code),
+    code: this.dealCode(id, code),
     module_options: module_options
   });
 
